@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import * as _ from 'lodash';
 import UriUtils from '../util/UriUtils';
 import TypedValue from './rdf_datatype/TypedValue';
 

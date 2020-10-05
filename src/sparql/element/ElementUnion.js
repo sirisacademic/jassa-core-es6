@@ -1,4 +1,3 @@
-import uniq from 'lodash.uniq';
 import Class from '../../ext/Class';
 import Element from './Element';
 import ElementFilter from './ElementFilter';

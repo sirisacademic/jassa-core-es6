@@ -1,4 +1,4 @@
-import isEqual from 'lodash.isequal';
+import * as _ from 'lodash';
 import JsonUtils from './JsonUtils';
 
 var ObjectUtils = {
@@ -78,7 +78,7 @@ var ObjectUtils = {
         } else if (b && b.equals) {
             result = b.equals(a);
         } else {
-            result = isEqual(a, b);
+            result = _.isEqual(a, b);
         }
 
         return result;

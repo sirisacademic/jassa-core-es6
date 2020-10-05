@@ -2,7 +2,7 @@ import Class from '../ext/Class';
 import ObjectUtils from '../util/ObjectUtils';
 
 //var reduce = require('lodash.reduce');
-import uniq from 'lodash.uniq';
+import * as _ from 'lodash';
 
 
 /**
@@ -27,7 +27,7 @@ var DatasetSpec = {
 
     getIrisMentioned: function() {
         var raw = this.defaultGraphIris.concat(this.namedGraphIris);
-        var result = uniq(raw);
+        var result = _.uniq(raw);
         return result;
     },
 

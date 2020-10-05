@@ -1,9 +1,9 @@
-import uniq from 'lodash.uniq';
+import * as _ from 'lodash';
 import NodeUtils from './NodeUtils';
 
 var TripleUtils = {
     uniqTriples: function(triples) {
-        var result =  uniq(triples, false, function(x) {
+        var result =  _.uniq(triples, false, function(x) {
             return x.toString();
         });
         return result;

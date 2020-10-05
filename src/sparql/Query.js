@@ -1,10 +1,8 @@
 import Class from '../ext/Class';
-import union from 'lodash.union';
 import ObjectUtils from '../util/ObjectUtils';
 import VarExprList from './VarExprList';
 import ArrayUtils from '../util/ArrayUtils';
 import ElementHelpers from './ElementHelpers';
-import ElementUtils from './ElementUtils';
 import QueryType from './QueryType';
 import ExprAggregator from './expr/ExprAggregator';
 

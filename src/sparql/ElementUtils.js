@@ -1,6 +1,3 @@
-// lib deps
-import uniq from 'lodash.uniq';
-
 // project deps
 import ElementTriplesBlock from './element/ElementTriplesBlock';
 

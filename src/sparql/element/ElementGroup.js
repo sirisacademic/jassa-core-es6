@@ -1,4 +1,4 @@
-import uniq from 'lodash.uniq';
+import * as _ from 'lodash';
 import Class from '../../ext/Class';
 import Element from './Element';
 import ElementFilter from './ElementFilter';
@@ -91,7 +91,7 @@ var ElementGroup = Class.create(Element, {
 
         newElements.push.apply(newElements, rest);
 
-        var uniqFilters = uniq(filters, false, function(x) {
+        var uniqFilters = _.uniq(filters, false, function(x) {
             return x.toString();
         });
         newElements.push.apply(newElements, uniqFilters);

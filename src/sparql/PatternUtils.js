@@ -1,4 +1,4 @@
-import union from 'lodash.union';
+import * as _ from 'lodash';
 
 var isFunction = function(obj) {
     return typeof obj === 'function';
@@ -15,7 +15,7 @@ var PatternUtils = {
             }
 
             var vs = element.getVarsMentioned();
-            var r = union(memo, vs);
+            var r = _.union(memo, vs);
             return r;
         }, []);
 

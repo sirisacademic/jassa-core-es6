@@ -1,4 +1,4 @@
-import union from 'lodash.union';
+import * as _ from 'lodash';
 import NodeUtils from '../../rdf/NodeUtils';
 import Class from '../../ext/Class';
 import Element from './Element';
@@ -27,7 +27,7 @@ var ElementNamedGraph = Class.create(Element, {
     getVarsMentioned: function() {
         var result = this.element.getVarsMentioned();
         if(this.node.isVar()) {
-            result = union(result, this.node);
+            result = _.union(result, this.node);
         }
         return result;
     },

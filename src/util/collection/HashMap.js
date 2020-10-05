@@ -1,4 +1,4 @@
-import forEach from 'lodash.foreach';
+import * as _ from 'lodash';
 import Class from '../../ext/Class';
 import ObjectUtils from './../ObjectUtils';
 
@@ -187,7 +187,7 @@ var HashMap = Class.create({
     keys: function() {
         var result = [];
 
-        forEach(this.hashToBucket, function(bucket) {
+        _.forEach(this.hashToBucket, function(bucket) {
             var keys = [];
             bucket.forEach(function(item) {
                 if (item.key) {
@@ -213,7 +213,7 @@ var HashMap = Class.create({
     entries: function() {
         var result = [];
 
-        forEach(this.hashToBucket, function(bucket) {
+        _.forEach(this.hashToBucket, function(bucket) {
             result.push.apply(result, bucket);
         });
 

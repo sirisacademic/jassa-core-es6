@@ -1,4 +1,4 @@
-import uniq from 'lodash.uniq';
+import * as _ from 'lodash';
 
 var StringUtils = {
 
@@ -28,7 +28,7 @@ var StringUtils = {
             result.push(match[index]);
         }
 
-        result = uniq(result);
+        result = _.uniq(result);
 
         return result;
     },

@@ -1,5 +1,5 @@
 // libs
-import union from 'lodash.union';
+import * as _ from 'lodash';
 
 import Class from '../../ext/Class';
 
@@ -50,7 +50,7 @@ var ElementTriplesBlock = Class.create(Element, {
     getVarsMentioned: function() {
         var result = [];
         this.triples.forEach(function(triple) {
-            result = union(result, triple.getVarsMentioned());
+            result = _.union(result, triple.getVarsMentioned());
         });
 
         return result;

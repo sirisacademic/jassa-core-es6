@@ -1,5 +1,5 @@
 import Class from '../../ext/Class';
-import union from 'lodash.union';
+import * as _ from 'lodash';
 import NodeUtils from '../../rdf/NodeUtils';
 import Element from './Element';
 
@@ -24,7 +24,7 @@ var ElementBind = Class.create(Element, {
     },
 
     getVarsMentioned: function(){
-        return union(this.expr.getVarsMentioned(), this.variable);
+        return _.union(this.expr.getVarsMentioned(), this.variable);
     },
 
     copy: function(){
