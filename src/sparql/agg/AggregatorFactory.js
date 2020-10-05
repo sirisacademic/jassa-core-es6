@@ -7,8 +7,6 @@ import AggMax from './AggMax';
 import AggMaxDistinct from './AggMaxDistinct';
 import AggMin from './AggMin';
 import AggMinDistinct from './AggMinDistinct';
-import AggMin from './AggMin';
-import AggMinDistinct from './AggMinDistinct';
 import AggSum from './AggSum';
 import AggSumDistinct from './AggSumDistinct';
 import AggGroup_Concat from './AggGroup_Concat';
