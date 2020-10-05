@@ -1,0 +1,22 @@
+import Class from '../../ext/Class';
+
+var Entry = Class.create({
+    initialize: function(key, value) {
+        this.key = key;
+        this.value = value;
+    },
+
+    getKey: function() {
+        return this.key;
+    },
+
+    getValue: function() {
+        return this.value;
+    },
+
+    toString: function() {
+        return this.key + '->' + this.value;
+    }
+});
+
+export default Entry;

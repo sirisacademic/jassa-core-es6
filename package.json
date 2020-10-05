@@ -1,0 +1,24 @@
+{
+  "name": "jassa",
+  "version": "1.0.0",
+  "description": "Javascript Suite for Sparql Access",
+  "main": "dist/jassa.js",
+  "dependencies": {
+    "util": "*",
+    "rdf": "*",
+    "vocab": "*",
+    "sparql": "*",
+    "service": "*",
+    "sponate": "*",
+    "facete": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sparql"
+  ],
+  "author": "",
+  "license": "ISC"
+}

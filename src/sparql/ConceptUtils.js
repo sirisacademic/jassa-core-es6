@@ -1,0 +1,581 @@
+import Node from '../rdf/node/Node';
+import NodeFactory from '../rdf/NodeFactory';
+import Triple from '../rdf/Triple';
+import HashMap from '../util/collection/HashMap';
+import rdf from './../vocab/rdf';
+import VarUtils from './VarUtils';
+import ElementUtils from './ElementUtils';
+import ExprAggregator from './expr/ExprAggregator';
+import AggCount from './agg/AggCount';
+import ExprVar from './expr/ExprVar';
+import E_Equals from './expr/E_Equals';
+import ElementTriplesBlock from './element/ElementTriplesBlock';
+import ElementOptional from './element/ElementOptional';
+import ElementSubQuery from './element/ElementSubQuery';
+import ElementGroup from './element/ElementGroup';
+import ElementFilter from './element/ElementFilter';
+import QueryUtils from './QueryUtils';
+import NodeValueUtils from './NodeValueUtils';
+import Query from './Query';
+import Concept from './Concept';
+
+
+/**
+ * Combines the elements of two concepts, yielding a new concept.
+ * The new concept used the variable of the second argument.
+ *
+ */
+var ConceptUtils = {
+
+
+    /**
+     * Creates a new concept by navigating from the sourceConcept via the given
+     * relation.
+     *
+     * The variables of the relation are retained, thus relation.getSourceVar() and relation.getTargetVar()
+     * can still be used on the resulting targetConcept.
+     *
+     * In contrast, the variables of the sourceConcept may be renamed.
+     *
+     * @param sourceConcept
+     * @param relation
+     * @returns {Concept}
+     */
+    createTargetConcept: function(sourceConcept, relation) {
+
+        var result;
+
+        // join(sourceConcept.getVar(), relation.getSourceVar())
+        var sourceVars = relation.getElement().getVarsMentioned();
+        var targetVars = sourceConcept.getElement().getVarsMentioned();
+
+        //console.log('Relation: ' + relation);
+        var sourceJoinVars = [relation.getSourceVar()];
+        var targetJoinVars = [sourceConcept.getVar()];
+
+        var varMap = ElementUtils.createJoinVarMap(sourceVars, targetVars, sourceJoinVars, targetJoinVars);
+
+        //var rawRelationElement = relation.getElement();
+
+        //var relationElement = ElementUtils.createRenamedElement(relation.getElement(), varMap);
+        var sourceElement = ElementUtils.createRenamedElement(sourceConcept.getElement(), varMap);
+        var relationElement = relation.getElement();
+
+        //var sourceElement = sourceConcept.getElement();
+        var targetVar = relation.getTargetVar();
+
+        if(sourceConcept.isSubjectConcept()) {
+            if(relation.isEmpty()) {
+                result = sourceConcept;
+            } else {
+                result = new Concept(relationElement, targetVar);
+            }
+        } else {
+            // TODO Rename variables when combining the elements
+            // TODO If the relation is empty, then we need to rename the sourceVar of the concept to the targetVar
+            var e = new ElementGroup([sourceElement, relationElement]);
+            result = new Concept(e, targetVar);
+        }
+
+        return result;
+    },
+
+    createVarMap: function(attrConcept, filterConcept) {
+        var attrElement = attrConcept.getElement();
+        var filterElement = filterConcept.getElement();
+
+        //var attrVar = attrConcept.getVar();
+
+        var attrVars = attrElement.getVarsMentioned();
+        var filterVars = filterElement.getVarsMentioned();
+
+        var attrJoinVars = [attrConcept.getVar()];
+        var filterJoinVars = [filterConcept.getVar()];
+
+        var result = ElementUtils.createJoinVarMap(attrVars, filterVars, attrJoinVars, filterJoinVars); //, varNameGenerator);
+
+        return result;
+    },
+
+    createRenamedConcept: function(attrConcept, filterConcept) {
+
+        var varMap = this.createVarMap(attrConcept, filterConcept);
+
+        var attrVar = attrConcept.getVar();
+        var filterElement = filterConcept.getElement();
+        var newFilterElement = ElementUtils.createRenamedElement(filterElement, varMap);
+
+        var result = new Concept(newFilterElement, attrVar);
+
+        return result;
+    },
+
+    renameVars: function(concept, varMap) {
+        var fnSubst = VarUtils.fnSubst(varMap);
+
+        var newVar = fnSubst(concept.getVar());
+        var newElement = concept.getElement().copySubstitute(fnSubst);
+
+        var result = new Concept(newElement, newVar);
+        return result;
+
+    },
+
+
+    /**
+     * Combines two concepts into a new one. Thereby, one concept plays the role of the attribute concepts whose variable names are left untouched,
+     * The other concept plays the role of the 'filter' which limits the former concept to certain items.
+     *
+     *
+     */
+    createCombinedConcept: function(attrConcept, filterConcept, renameVars, attrsOptional, filterAsSubquery) {
+        // TODO Is it ok to rename vars here? // TODO The variables of baseConcept and tmpConcept must match!!!
+        // Right now we just assume that.
+        var attrVar = attrConcept.getVar();
+        var filterVar = filterConcept.getVar();
+
+        if(!filterVar.equals(attrVar)) {
+            var varMap = new HashMap();
+            varMap.put(filterVar, attrVar);
+
+            // If the attrVar appears in the filterConcept, rename it to a new variable
+            var distinctAttrVar = NodeFactory.createVar('cc_' + attrVar.getName());
+            varMap.put(attrVar, distinctAttrVar);
+
+            // TODO Ensure uniqueness
+            //filterConcept.getVarsMentioned();
+            //attrConcept.getVarsMentioned();
+            // VarUtils.freshVar('cv', );  //
+
+            filterConcept = this.renameVars(filterConcept, varMap);
+        }
+
+        var tmpConcept;
+        if(renameVars) {
+            tmpConcept = this.createRenamedConcept(attrConcept, filterConcept);
+        } else {
+            tmpConcept = filterConcept;
+        }
+
+
+        var tmpElements = tmpConcept.getElements();
+
+
+        // Small workaround (hack) with constraints on empty paths:
+        // In this case, the tmpConcept only provides filters but
+        // no triples, so we have to include the base concept
+        //var hasTriplesTmp = tmpConcept.hasTriples();
+        //hasTriplesTmp &&
+        var attrElement = attrConcept.getElement();
+
+        var e;
+        if(tmpElements.length > 0) {
+
+            if(tmpConcept.isSubjectConcept()) {
+                e = attrConcept.getElement(); //tmpConcept.getElement();
+            } else {
+
+                var newElements = [];
+
+                if(attrsOptional) {
+                    attrElement = new ElementOptional(attrConcept.getElement());
+                }
+                newElements.push(attrElement);
+
+                if(filterAsSubquery) {
+                    tmpElements = [new ElementSubQuery(tmpConcept.asQuery())];
+                }
+
+
+                //newElements.push.apply(newElements, attrElement);
+                newElements.push.apply(newElements, tmpElements);
+
+
+                e = new ElementGroup(newElements);
+                e = e.flatten();
+            }
+        } else {
+            e = attrElement;
+        }
+
+        var concept = new Concept(e, attrVar);
+
+        return concept;
+    },
+
+    createSubjectConcept: function(s, p, o) {
+
+        //var s = sparql.Node.v("s");
+        s = s || VarUtils.s;
+        p = p || VarUtils._p_;
+        o = o || VarUtils._o_;
+
+        var conceptElement = new ElementTriplesBlock([new Triple(s, p, o)]);
+
+        //pathManager = new facets.PathManager(s.value);
+
+        var result = new Concept(conceptElement, s);
+
+        return result;
+    },
+
+    /**
+     *
+     * @param typeUri A jassa.rdf.Node or string denoting the URI of a type
+     * @param subjectVar Optional; variable of the concept, specified either as string or subclass of jassa.rdf.Node
+     */
+    createTypeConcept: function(typeUri, subjectVar) {
+        var type = typeUri instanceof Node ? typeUri : NodeFactory.createUri(typeUri);
+        var vs = !subjectVar ? NodeFactory.createVar('s') :
+            (subjectVar instanceof Node ? subjectVar : NodeFactory.createVar(subjectVar));
+
+        var result = new Concept(new ElementTriplesBlock([new Triple(vs, rdf.type, type)]), vs);
+        return result;
+    },
+
+    /**
+     * Creates a query based on the concept
+     * TODO: Maybe this should be part of a static util class?
+     */
+    createQueryList: function(concept, limit, offset) {
+//        var element = concept.getElement();
+//        if(element instanceof ElementOptional) {
+//            element = element.getOptionalElement();
+//        }
+
+        var result = new Query();
+        result.setQuerySelectType();
+        result.setDistinct(true);
+
+        result.setLimit(limit);
+        result.setOffset(offset);
+
+        result.getProject().add(concept.getVar());
+        result.setQueryPattern(concept.getElement());
+
+        return result;
+    },
+
+    freshVar: function(concept, baseVarName) {
+        baseVarName = baseVarName || 'c';
+
+        var varsMentioned = concept.getVarsMentioned();
+
+        var varGen = VarUtils.createVarGen(baseVarName, varsMentioned);
+        var result = varGen.next();
+
+        return result;
+    },
+
+    // Util for cerateQueryCount
+    wrapAsSubQuery: function(query, v) {
+        var esq = new ElementSubQuery(query);
+
+        var result = new Query();
+        result.setQuerySelectType();
+        result.getProject().add(v);
+        result.setQueryPattern(esq);
+
+        return result;
+    },
+
+    createQueryCount: function(concept, outputVar, itemLimit, rowLimit) {
+        var subQuery = this.createQueryList(concept);
+
+        if(rowLimit != null) {
+            subQuery.setDistinct(false);
+            subQuery.setLimit(rowLimit);
+
+            subQuery = this.wrapAsSubQuery(subQuery, concept.getVar());
+            subQuery.setDistinct(true);
+        }
+
+        if(itemLimit != null) {
+            subQuery.setLimit(itemLimit);
+        }
+
+        var esq = new ElementSubQuery(subQuery);
+
+        var result = new Query();
+        result.setQuerySelectType();
+        result.getProject().add(outputVar, new ExprAggregator(null, new AggCount()));//new ExprAggregator(concept.getVar(), new AggCount()));
+        result.setQueryPattern(esq);
+
+        return result;
+    },
+
+
+
+    /**
+     * Create a query to check the 'raw-size' of the concept for one of its values -i.e. the number of non-distinct occurrences
+     *
+     * Select ?s (Count(*) As ?countVar) {
+     *   Select ?s {
+     *       conceptElement
+     *       Filter(?s = valueOfNode)
+     *   } Limit rowLimit
+     * }
+     *
+     * if the rowLimit is omitted, this becomes
+     *
+     * Select ?s (Count(*) As ?countVar) {
+     *       conceptElement
+     *       Filter(?s = valueOfNode)
+     * }
+     *
+     */
+    createQueryRawSize: function(concept, sourceValue, countVar, rowLimit) {
+        var s = concept.getVar();
+        var baseElement = concept.getElement();
+
+        var es = new ExprVar(s);
+        var nv = NodeValueUtils.makeNode(sourceValue);
+        var filter = new ElementFilter(new E_Equals(es, nv));
+
+        var subElement = (new ElementGroup([baseElement, filter])).flatten();
+
+        if(rowLimit != null) {
+            var subQuery = new Query();
+            subQuery.setQuerySelectType();
+            subQuery.getProject().add(s);
+            //subQuery.getProject.add(o);
+            subQuery.setQueryPattern(subElement);
+            subQuery.setLimit(rowLimit);
+
+            subElement = new ElementSubQuery(subQuery);
+        }
+
+        var result = new Query();
+        result.setQuerySelectType();
+        result.getProject().add(s);
+        result.getProject().add(countVar, new ExprAggregator(null, new AggCount()));
+        result.setQueryPattern(subElement);
+        result.getGroupBy().push(es);
+
+        return result;
+    },
+/*
+Concrete example for above:
+
+Select ?p (Count(*) As ?c) {
+  { Select ?p {
+    ?s ?p ?o .
+    Filter(?p = rdf:type)
+  } Limit 1000 }
+} Group By ?p
+
+without rowLimit:
+
+Select ?p (Count(*) As ?c) {
+  ?s ?p ?o .
+  Filter(?p = rdf:type)
+} Group By ?p
+
+
+ */
+
+    isGroupedOnlyByVar: function(query, groupVar) {
+        var result = false;
+
+        var hasOneGroup = query.getGroupBy().length === 1;
+        if(hasOneGroup) {
+            var expr = query.getGroupBy()[0];
+            if(expr instanceof ExprVar) {
+                var v = expr.asVar();
+
+                result = v.equals(groupVar);
+            }
+        }
+
+        return result;
+    },
+
+    isDistinctConceptVar: function(query, conceptVar) {
+        var isDistinct = query.isDistinct();
+
+        var projectVars = query.getProjectVars();
+
+        var hasSingleVar = !query.isQueryResultStar() && projectVars && projectVars.length === 1;
+        var result = isDistinct && hasSingleVar && projectVars[0].equals(conceptVar);
+        return result;
+    },
+
+
+    /**
+     * Checks whether the query's projection is distinct (either by an explicit distinct or an group by)
+     * and only has a single
+     * variable matching a requested one
+     *
+     */
+    isConceptQuery: function(query, conceptVar) {
+        var isDistinctGroupByVar = this.isGroupedOnlyByVar(query, conceptVar);
+        var isDistinctConceptVar = this.isDistinctConceptVar(query, conceptVar);
+
+        var result = isDistinctGroupByVar || isDistinctConceptVar;
+        return result;
+    },
+
+    /**
+     * Filters a variable of a given query against a given concept
+     *
+     * If there is a grouping on the attrVar, e.g.
+     * Select ?s Count(Distinct ?x) { ... }
+     *
+     *
+     * @param attrQuery
+     * @param attrVar
+     * @param isLeftJoin
+     * @param filterConcept
+     * @param limit
+     * @param offset
+     * @returns
+     */
+    /*
+    createAttrQuery: function(attrQuery, attrVar, isLeftJoin, filterConcept, limit, offset) {
+        var result = isLeftJoin
+            ? this.createAttrQueryLeftJoin(attrQuery, attrVar, filterConcept, limit, offset)
+            : this.createAttrQueryJoin(attrQuery, attrVar, filterConcept, limit, offset);
+
+        return result;
+    },
+
+    createAttrQueryLeftJoin: function(attrQuery, attrVar, filterConcept, limit, offset) {
+        throw new Error('Not implemented yet');
+    },
+    */
+
+    // TODO This method sucks, as it tries to handle too many cases, figure out how to improve it
+    /*jshint maxdepth:10 */
+    createAttrQuery: function(attrQuery, attrVar, isLeftJoin, filterConcept, limit, offset, forceSubQuery) {
+
+        var attrConcept = new Concept(new ElementSubQuery(attrQuery), attrVar);
+
+        var renamedFilterConcept = ConceptUtils.createRenamedConcept(attrConcept, filterConcept);
+        //console.log('attrConcept: ' + attrConcept);
+        //console.log('filterConcept: ' + filterConcept);
+        //console.log('renamedFilterConcept: ' + renamedFilterConcept);
+
+        // Selet Distinct ?ori ?gin? alProj { Select (foo as ?ori ...) { originialElement} }
+
+        // Whether each value for attrVar uniquely identifies a row in the result set
+        // In this case, we just join the filterConcept into the original query
+        var isAttrVarPrimaryKey = this.isConceptQuery(attrQuery, attrVar);
+        //isAttrVarPrimaryKey = false;
+
+        var result;
+        if(isAttrVarPrimaryKey) {
+            // Case for e.g. Get the number of products offered by vendors in Europe
+            // Select ?vendor Count(Distinct ?product) { ... }
+
+            result = attrQuery.clone();
+
+            var se;
+            if(forceSubQuery) {
+
+                // Select ?s { attrElement(?s, ?x) filterElement(?s) }
+                var sq = new Query();
+                sq.setQuerySelectType();
+                sq.setDistinct(true);
+                sq.getProject().add(attrConcept.getVar());
+                sq.setQueryPattern(attrQuery.getQueryPattern());
+
+                var tmp = new ElementSubQuery(sq);
+
+                var refVars = attrQuery.getProject().getRefVars();
+                if(refVars.length === 1 && attrVar.equals(refVars[0])) {
+                    se = tmp;
+                } else {
+                    se = new ElementGroup([attrQuery.getQueryPattern(), tmp]);
+                }
+
+            } else {
+                se = attrQuery.getQueryPattern();
+            }
+
+
+            if(!renamedFilterConcept.isSubjectConcept()) {
+                var newElement = new ElementGroup([se, renamedFilterConcept.getElement()]);
+                newElement = newElement.flatten();
+                result.setQueryPattern(newElement);
+            }
+
+            result.setLimit(limit);
+            result.setOffset(offset);
+        } else {
+            // Case for e.g. Get all products offered by some 10 vendors
+            // Select ?vendor ?product { ... }
+
+            var requireSubQuery = limit != null || offset != null;
+
+
+            var newFilterElement;
+            if(requireSubQuery) {
+                var subConcept;
+                if(isLeftJoin) {
+                    subConcept = renamedFilterConcept;
+                } else {
+                    // If we do an inner join, we need to include the attrQuery's element in the sub query
+
+                    var subElement;
+                    if(renamedFilterConcept.isSubjectConcept()) {
+                        subElement = attrQuery.getQueryPattern();
+                    } else {
+                        subElement = new ElementGroup([attrQuery.getQueryPattern(), renamedFilterConcept.getElement()]);
+                    }
+
+                    subConcept = new Concept(subElement, attrVar);
+                }
+
+                var subQuery = ConceptUtils.createQueryList(subConcept, limit, offset);
+                newFilterElement = new ElementSubQuery(subQuery);
+            }
+            else {
+                newFilterElement = renamedFilterConcept.getElement();
+            }
+
+//            var canOptimize = isAttrVarPrimaryKey && requireSubQuery && !isLeftJoin;
+//
+//            var result;
+//
+//            //console.log('Optimize: ', canOptimize, isAttrConceptQuery, requireSubQuery, isLeftJoin);
+//            if(canOptimize) {
+//                // Optimization: If we have a subQuery and the attrQuery's projection is only 'DISTINCT ?attrVar',
+//                // then the subQuery is already the result
+//                result = newFilterElement.getQuery();
+//            } else {
+
+
+            var query = attrQuery.clone();
+
+            var attrElement = query.getQueryPattern();
+
+            var newAttrElement;
+            if(!requireSubQuery && (!filterConcept || filterConcept.isSubjectConcept())) {
+                newAttrElement = attrElement;
+            }
+            else {
+                if(isLeftJoin) {
+                    newAttrElement = new ElementGroup([
+                        newFilterElement,
+                        new ElementOptional(attrElement)
+                    ]);
+                } else {
+                    newAttrElement = new ElementGroup([
+                        attrElement,
+                        newFilterElement
+                    ]);
+                }
+            }
+
+            query.setQueryPattern(newAttrElement);
+            result = query;
+        }
+
+        // console.log('Argh Query: ' + result, limit, offset);
+        return result;
+    },
+
+};
+
+export default ConceptUtils;
+
