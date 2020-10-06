@@ -1,5 +1,3 @@
-import uniq from 'lodash.uniq';
-import forEach from 'lodash.foreach';
 import VarUtils from '../sparql/VarUtils';
 import ServiceUtils from './ServiceUtils';
 import IteratorArray from '../util/collection/IteratorArray';
@@ -108,7 +106,7 @@ var TableServiceUtils = {
         // Collect nodes
         var result = [];
         rows.forEach(function(item) {
-            forEach(item, function(node) {
+            _.forEach(item, function(node) {
                 if(node != null) {
                     result.push(node);
                 } else {
@@ -117,7 +115,7 @@ var TableServiceUtils = {
             });
         });
 
-        result = uniq(result, false, function(x) {
+        result = _.uniq(result, false, function(x) {
             return x.toString();
         });
 
@@ -163,7 +161,7 @@ var TableServiceUtils = {
         var result = p.then(function(nodeToLabel) {
             var r = rows.map(function(row) {
                 var r = {};
-                forEach(row, function(node, key) {
+                _.forEach(row, function(node, key) {
                     var labelInfo = nodeToLabel.get(node);
                     r[key] = {
                         node: node,

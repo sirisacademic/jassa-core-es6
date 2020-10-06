@@ -1,24 +1,7 @@
-'use strict';
-
-import owl from './owl';
-import rdf from './rdf';
-import rdfs from './rdfs';
-import wgs84 from './wgs84';
-import xsd from './xsd';
-import cs from './cs';
-import InitialContext from './InitialContext';
-
-var ns = {
-    owl,
-    rdf,
-    rdfs,
-    wgs84,
-    xsd,
-    cs,
-    InitialContext
-};
-
-//Object.freeze(ns);
-
-export default ns;
-
+export { default as owl } from './owl';
+export { default as rdf } from './rdf';
+export { default as rdfs } from './rdfs';
+export { default as wgs84 } from './wgs84';
+export { default as xsd } from './xsd';
+export { default as cs } from './cs';
+export { default as InitialContext } from './InitialContext';

@@ -1,5 +1,7 @@
+import * as PromiseBluebird from 'bluebird';
+
 var shared = {
-    Promise: null,
+    Promise: PromiseBluebird,
     ajax: function() {
         throw new Error('not set!');
     }

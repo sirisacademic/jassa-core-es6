@@ -1,4 +1,3 @@
-import forEach from 'lodash.foreach';
 import Class from '../../ext/Class';
 import ObjectUtils from '../../util/ObjectUtils';
 import HashMap from '../../util/collection/HashMap';
@@ -47,7 +46,7 @@ var SparqlCacheSupplier = Class.create({
     invalidate: function(serviceIri, graphIris, deleteEntries) {
         if(!serviceIri) {
             // Clear the whole cache
-            forEach(this.serviceToGraphsToCache, function(graphsToCache) {
+            _.forEach(this.serviceToGraphsToCache, function(graphsToCache) {
                 graphsToCache.entries().forEach(function(entry) {
                     var cache = entry.val;
                     cache.clear();

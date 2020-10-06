@@ -1,5 +1,4 @@
 import Class from '../../ext/Class';
-import defaults from 'lodash.defaults';
 import SparqlServiceBaseString from './SparqlServiceBaseString';
 import QueryExecutionHttp from '../query_execution/QueryExecutionHttp';
 import JSONCanonical from '../../ext/JSONCanonical';
@@ -85,7 +84,7 @@ var SparqlServiceHttp = Class.create(SparqlServiceBaseString, {
     */
 
     createQueryExecutionStr: function(queryStr) {
-        var ajaxOptions = defaults({}, this.ajaxOptions);
+        var ajaxOptions = _.defaults({}, this.ajaxOptions);
 
         var result = new QueryExecutionHttp(queryStr, this.serviceUri, this.datasetDescription, ajaxOptions, this.httpArgs, this.httpClient);
         return result;

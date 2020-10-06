@@ -1,5 +1,4 @@
 import Class from '../../ext/Class';
-import uniq from 'lodash.uniq';
 import ArrayUtils from '../../util/ArrayUtils';
 import HashMap from '../../util/collection/HashMap';
 import LookupServiceDelegateBase from './LookupServiceDelegateBase';
@@ -19,7 +18,7 @@ var LookupServiceChunker = Class.create(LookupServiceDelegateBase, {
         var self = this;
 
         // Make ids unique
-        var ks = uniq(keys, false, function(key) {
+        var ks = _.uniq(keys, false, function(key) {
             var keyStr = self.getIdStr(key);
             return keyStr;
         });

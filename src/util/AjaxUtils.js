@@ -1,5 +1,4 @@
 import shared from './shared';
-import forEach from 'lodash.foreach';
 
 //var ajax = shared.ajax;
 //var Promise = shared.Promise;
@@ -16,7 +15,7 @@ var AjaxUtils = {
             var delegate = ajaxSpec.beforeSend;
             ajaxSpec.beforeSend = function(xhr) {
 
-                forEach(ajaxSpec.headers, function(v, k) {
+                _.forEach(ajaxSpec.headers, function(v, k) {
                     xhr.setRequestHeader(k, v);
                 });
 

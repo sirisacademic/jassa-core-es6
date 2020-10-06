@@ -1,4 +1,3 @@
-import union from 'lodash.union';
 import shared from '../util/shared';
 var Promise = shared.Promise;
 
@@ -66,7 +65,7 @@ var ServiceUtils = {
         var varNames = [];
         arrayOfResultSets.forEach(function(rs) {
             var vns = rs.getVarNames();
-            varNames = union(varNames, vns);
+            varNames = _.union(varNames, vns);
 
             var arr = rs.getIterator().getArray();
             bindings.push.apply(bindings, arr);

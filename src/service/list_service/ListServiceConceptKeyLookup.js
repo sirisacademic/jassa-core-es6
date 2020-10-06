@@ -1,4 +1,3 @@
-import values from 'lodash.values';
 import Class from '../../ext/Class';
 import ListService from './ListService';
 import ServiceUtils from '../ServiceUtils';

@@ -1,77 +1,34 @@
-'use strict';
-
-import AnonId from './AnonId';
-import AnonIdStr from './AnonIdStr';
-import GraphImpl from './GraphImpl';
-import GraphUtils from './GraphUtils';
-import LiteralLabel from './LiteralLabel';
-import NodeFactory from './NodeFactory';
-import NodeUtils from './NodeUtils';
-import PrefixMappingImpl from './PrefixMappingImpl';
-import Triple from './Triple';
-import TripleUtils from './TripleUtils';
-import TypeMapper from './TypeMapper';
-import DatatypeLabel from './datatype/DatatypeLabel';
-import DatatypeLabelDate from './datatype/DatatypeLabelDate';
-import DatatypeLabelFloat from './datatype/DatatypeLabelFloat';
-import DatatypeLabelInteger from './datatype/DatatypeLabelInteger';
-import DatatypeLabelString from './datatype/DatatypeLabelString';
-import DefaultDatatypeLabels from './datatype/DefaultDatatypeLabels';
-import Node from './node/Node';
-import Node_Blank from './node/Node_Blank';
-import Node_Concrete from './node/Node_Concrete';
-import Node_Fluid from './node/Node_Fluid';
-import Node_Literal from './node/Node_Literal';
-import Node_Uri from './node/Node_Uri';
-import Node_Variable from './node/Node_Variable';
-import Var from './node/Var';
-import BaseDatatype from './rdf_datatype/BaseDatatype';
-import DefaultRdfDatatypes from './rdf_datatype/DefaultRdfDatatypes';
-import RdfDatatype from './rdf_datatype/RdfDatatype';
-import RdfDatatypeBase from './rdf_datatype/RdfDatatypeBase';
-import RdfDatatypeLabel from './rdf_datatype/RdfDatatypeLabel';
-import TypedValue from './rdf_datatype/TypedValue';
-import Coordinate from './talis/Coordinate';
-import GraphTalis from './talis/GraphTalis';
-import TalisRdfJsonUtils from './talis/TalisRdfJsonUtils';
-
-var ns = {
-    AnonId,
-    AnonIdStr,
-    GraphImpl,
-    GraphUtils,
-    LiteralLabel,
-    NodeFactory,
-    NodeUtils,
-    PrefixMappingImpl,
-    Triple,
-    TripleUtils,
-    TypeMapper,
-    DatatypeLabel,
-    DatatypeLabelDate,
-    DatatypeLabelFloat,
-    DatatypeLabelInteger,
-    DatatypeLabelString,
-    DefaultDatatypeLabels,
-    Node,
-    Node_Blank,
-    Node_Concrete,
-    Node_Fluid,
-    Node_Literal,
-    Node_Uri,
-    Node_Variable,
-    Var,
-    BaseDatatype,
-    DefaultRdfDatatypes,
-    RdfDatatype,
-    RdfDatatypeBase,
-    RdfDatatypeLabel,
-    TypedValue,
-    Coordinate,
-    GraphTalis,
-    TalisRdfJsonUtils
-};
-
-//Object.freeze(ns);
-
-export default ns;
+export { default as AnonId } from './AnonId';
+export { default as AnonIdStr } from './AnonIdStr';
+export { default as GraphImpl } from './GraphImpl';
+export { default as GraphUtils } from './GraphUtils';
+export { default as LiteralLabel } from './LiteralLabel';
+export { default as NodeFactory } from './NodeFactory';
+export { default as NodeUtils } from './NodeUtils';
+export { default as PrefixMappingImpl } from './PrefixMappingImpl';
+export { default as Triple } from './Triple';
+export { default as TripleUtils } from './TripleUtils';
+export { default as TypeMapper } from './TypeMapper';
+export { default as DatatypeLabel } from './datatype/DatatypeLabel';
+export { default as DatatypeLabelDate } from './datatype/DatatypeLabelDate';
+export { default as DatatypeLabelFloat } from './datatype/DatatypeLabelFloat';
+export { default as DatatypeLabelInteger } from './datatype/DatatypeLabelInteger';
+export { default as DatatypeLabelString } from './datatype/DatatypeLabelString';
+export { default as DefaultDatatypeLabels } from './datatype/DefaultDatatypeLabels';
+export { default as Node } from './node/Node';
+export { default as Node_Blank } from './node/Node_Blank';
+export { default as Node_Concrete } from './node/Node_Concrete';
+export { default as Node_Fluid } from './node/Node_Fluid';
+export { default as Node_Literal } from './node/Node_Literal';
+export { default as Node_Uri } from './node/Node_Uri';
+export { default as Node_Variable } from './node/Node_Variable';
+export { default as Var } from './node/Var';
+export { default as BaseDatatype } from './rdf_datatype/BaseDatatype';
+export { default as DefaultRdfDatatypes } from './rdf_datatype/DefaultRdfDatatypes';
+export { default as RdfDatatype } from './rdf_datatype/RdfDatatype';
+export { default as RdfDatatypeBase } from './rdf_datatype/RdfDatatypeBase';
+export { default as RdfDatatypeLabel } from './rdf_datatype/RdfDatatypeLabel';
+export { default as TypedValue } from './rdf_datatype/TypedValue';
+export { default as Coordinate } from './talis/Coordinate';
+export { default as GraphTalis } from './talis/GraphTalis';
+export { default as TalisRdfJsonUtils } from './talis/TalisRdfJsonUtils';

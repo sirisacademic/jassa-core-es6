@@ -1,6 +1,4 @@
 import Class from '../../ext/Class';
-import _uniq from 'lodash.uniq';
-import _find from 'lodash.find';
 import LookupServiceDelegateBase from './LookupServiceDelegateBase';
 import RequestCache from '../RequestCache';
 import HashMap from '../../util/collection/HashMap';
@@ -32,7 +30,7 @@ var LookupServiceCache = Class.create(LookupServiceDelegateBase, {
         // console.log('cache status [BEFORE] ' + JSON.stringify(self.requestCache));
 
         // Make ids unique
-        var uniq = _uniq(ids, false, function(id) {
+        var uniq = _.uniq(ids, false, function(id) {
             var idStr = self.getIdStr(id);
             return idStr;
         });

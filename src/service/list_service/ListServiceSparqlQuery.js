@@ -1,5 +1,4 @@
 import Class from '../../ext/Class';
-import values from 'lodash.values';
 import shared from '../../util/shared';
 var Promise = shared.Promise;
 
@@ -74,7 +73,7 @@ var ListServiceSparqlQuery = Class.create(ListService, {
             var map = ResultSetUtils.partition(rs, attrVar);
             var entries = map.entries();
 
-            var r = values(entries);
+            var r = _.values(entries);
             return r;
             // partition the result set according to the attrConcept.getVar();
         });

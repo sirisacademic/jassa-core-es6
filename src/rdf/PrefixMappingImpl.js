@@ -1,4 +1,3 @@
-import forEach from 'lodash.foreach';
 import Class from '../ext/Class';
 import CurieUtils from '../util/CurieUtils';
 import PrefixUtils from '../util/PrefixUtils';
@@ -90,7 +89,7 @@ var PrefixMappingImpl = Class.create({
 
         var current = this.prefixes;
         while(current != null) {
-            forEach(current, processCandidate);
+            _.forEach(current, processCandidate);
             current = Object.getPrototypeOf(current);
         }
 

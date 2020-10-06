@@ -1,5 +1,4 @@
 import Class from '../../ext/Class';
-import defaults from 'lodash.defaults';
 import SparqlUpdateBaseString from './SparqlUpdateBaseString';
 import UpdateExecutionHttp from '../query_execution/UpdateExecutionHttp';
 import JSONCanonical from '../../ext/JSONCanonical';
@@ -43,7 +42,7 @@ var SparqlUpdateHttp = Class.create(SparqlUpdateBaseString, {
 //    },
 
     createUpdateExecutionStr: function(queryStr) {
-        var ajaxOptions = defaults({}, this.ajaxOptions);
+        var ajaxOptions = _.defaults({}, this.ajaxOptions);
 
         var result = new UpdateExecutionHttp(queryStr, this.serviceUri, this.usingGraphUris, this.usingNamedGraphUris, ajaxOptions, this.httpArgs);
         return result;

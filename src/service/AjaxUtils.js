@@ -1,5 +1,3 @@
-import defaults from 'lodash.defaults';
-
 
 var AjaxUtils = {
     unwrapSingleItem: function(arr) {
@@ -24,8 +22,8 @@ var AjaxUtils = {
             data: data
         };
 
-        defaults(data, dataDefaults);
-        defaults(result, ajaxDefaults);
+        _.defaults(data, dataDefaults);
+        _.defaults(result, ajaxDefaults);
 
         return result;
     },
@@ -51,8 +49,8 @@ var AjaxUtils = {
             data: data
         };
 
-        defaults(data, dataDefaults);
-        defaults(result, ajaxDefaults);
+        _.defaults(data, dataDefaults);
+        _.defaults(result, ajaxDefaults);
 
         //console.log('Created ajax spec: ' + JSON.stringify(result));
         return result;

@@ -1,78 +1,34 @@
-'use strict';
-
-import ArrayUtils from './ArrayUtils';
-import ExceptionUtils from './ExceptionUtils';
-import CacheUtils from './CacheUtils';
-import ClusterUtils from './ClusterUtils';
-import CollectionUtils from './CollectionUtils';
-import JsonUtils from './JsonUtils';
-import MapUtils from './MapUtils';
-import ObjectUtils from './ObjectUtils';
-import PrefixUtils from './PrefixUtils';
-import PromiseUtils from './PromiseUtils';
-import SerializationContext from './SerializationContext';
-import Serializer from './Serializer';
-import SetUtils from './SetUtils';
-import SetDelegate from './collection/SetDelegate';
-import SetDelegateCache from './collection/SetDelegateCache';
-import SetIntersection from './collection/SetIntersection';
-import SetDifference from './collection/SetDifference';
-import SetUnion from './collection/SetUnion';
-import StringUtils from './StringUtils';
-import TreeUtils from './TreeUtils';
-import UriUtils from './UriUtils';
-import shared from './shared';
-import ArrayList from './collection/ArrayList';
-import Entry from './collection/Entry';
-import HashBidiMap from './collection/HashBidiMap';
-import HashMap from './collection/HashMap';
-import HashSet from './collection/HashSet';
-import Iterator from './collection/Iterator';
-import IteratorAbstract from './collection/IteratorAbstract';
-import IteratorArray from './collection/IteratorArray';
-import ListMap from './collection/ListMap';
-import MapUnion from './collection/MapUnion';
-import MultiMapObjectArray from './collection/MultiMapObjectArray';
-import AjaxUtils from './AjaxUtils';
-
-var ns = {
-    ArrayUtils,
-    ExceptionUtils,
-    CacheUtils,
-    ClusterUtils,
-    CollectionUtils,
-    JsonUtils,
-    MapUtils,
-    ObjectUtils,
-    PrefixUtils,
-    PromiseUtils,
-    SerializationContext,
-    Serializer,
-    SetUtils,
-    SetDelegate,
-    SetDelegateCache,
-    SetIntersection,
-    SetDifference,
-    SetUnion,
-    StringUtils,
-    TreeUtils,
-    UriUtils,
-    shared,
-    ArrayList,
-    Entry,
-    HashBidiMap,
-    HashMap,
-    HashSet,
-    Iterator,
-    IteratorAbstract,
-    IteratorArray,
-    ListMap,
-    MapUnion,
-    MultiMapObjectArray,
-    AjaxUtils,
-};
-
-//Object.freeze(ns);
-
-export default ns;
-
+export { default as ArrayUtils } from './ArrayUtils';
+export { default as ExceptionUtils } from './ExceptionUtils';
+export { default as CacheUtils } from './CacheUtils';
+export { default as ClusterUtils } from './ClusterUtils';
+export { default as CollectionUtils } from './CollectionUtils';
+export { default as JsonUtils } from './JsonUtils';
+export { default as MapUtils } from './MapUtils';
+export { default as ObjectUtils } from './ObjectUtils';
+export { default as PrefixUtils } from './PrefixUtils';
+export { default as PromiseUtils } from './PromiseUtils';
+export { default as SerializationContext } from './SerializationContext';
+export { default as Serializer } from './Serializer';
+export { default as SetUtils } from './SetUtils';
+export { default as SetDelegate } from './collection/SetDelegate';
+export { default as SetDelegateCache } from './collection/SetDelegateCache';
+export { default as SetIntersection } from './collection/SetIntersection';
+export { default as SetDifference } from './collection/SetDifference';
+export { default as SetUnion } from './collection/SetUnion';
+export { default as StringUtils } from './StringUtils';
+export { default as TreeUtils } from './TreeUtils';
+export { default as UriUtils } from './UriUtils';
+export { default as shared } from './shared';
+export { default as ArrayList } from './collection/ArrayList';
+export { default as Entry } from './collection/Entry';
+export { default as HashBidiMap } from './collection/HashBidiMap';
+export { default as HashMap } from './collection/HashMap';
+export { default as HashSet } from './collection/HashSet';
+export { default as Iterator } from './collection/Iterator';
+export { default as IteratorAbstract } from './collection/IteratorAbstract';
+export { default as IteratorArray } from './collection/IteratorArray';
+export { default as ListMap } from './collection/ListMap';
+export { default as MapUnion } from './collection/MapUnion';
+export { default as MultiMapObjectArray } from './collection/MultiMapObjectArray';
+export { default as AjaxUtils } from './AjaxUtils';
