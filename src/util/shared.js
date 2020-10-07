@@ -1,10 +1,9 @@
 import * as PromiseBluebird from 'bluebird';
+import * as $ from 'jquery';
 
 var shared = {
     Promise: PromiseBluebird,
-    ajax: function() {
-        throw new Error('not set!');
-    }
+    ajax: $.ajax
 };
 
 export default shared;

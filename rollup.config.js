@@ -3,7 +3,7 @@ import * as meta from './package.json';
 
 export default {
     input: 'src/newindex.js',
-    external: ['lodash','bluebird'], //Object.keys(meta.dependencies || {}),
+    external: Object.keys(meta.dependencies || {}),
     plugins: [
         nodeResolve()
     ],
