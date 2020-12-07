@@ -14,7 +14,7 @@ var ExprFunction0 = Class.create(ExprFunctionBase, {
             throw new Error('Invalid argument');
         }
 
-        var result = this.$copy(args);
+        var result = new ExprFunction0(this.name);
         return result;
     },
 });
