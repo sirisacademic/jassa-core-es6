@@ -1,4 +1,5 @@
 import Class from '../../ext/Class';
+import NodeUtils from '../NodeUtils';
 import Node_Variable from './Node_Variable';
 import ObjectUtils from '../../util/ObjectUtils';
 
@@ -30,6 +31,9 @@ var Var = Class.create(Node_Variable, {
             this.name === that.name;
 
         return result;
+    },
+    copySubstitute: function(fnNodeMap) {
+        return NodeUtils.getSubstitute(this, fnNodeMap);
     }
 });
 
