@@ -181,15 +181,20 @@ var QueryUtils = {
                 // should include all characters enabled to name nodes
                 var regExp = new RegExp('<' + uriEscaped + '[\\w\-]+>', 'gi');
             
+                
                 // do replacement:
                 // from <URI#whatever> to prefix:whatever
                 queryString = queryString.replace(regExp, function(matchedString) {
                     // get the matching substring we looked for with
                     // the regExp (the \w+ part)
+
+                    // get the final character of the uriEscaped
+                    var ch = uriEscaped[uriEscaped.length-1];
                     var match = matchedString.substring(
-                        matchedString.lastIndexOf('#') + 1, 
+                        matchedString.lastIndexOf(ch) + 1, 
                         matchedString.lastIndexOf('>')
                     );
+
                     return prefix + ':' + match; 
                 });
             });
