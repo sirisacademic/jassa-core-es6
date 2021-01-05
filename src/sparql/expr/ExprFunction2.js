@@ -17,7 +17,7 @@ var ExprFunction2 = Class.create(ExprFunctionBase, {
     },
 
     copySubstitute: function(fnNodeMap) {
-        return new ExprFunction2(this.name, this.args);
+        return new ExprFunction2(this.name, this.left, this.right);
     },
 
     copy: function(args) {
